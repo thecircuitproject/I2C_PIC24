@@ -1,6 +1,6 @@
 /*
  * File:   i2c.c
- * Author: jborr
+ * Author: Jose Borrayo
  *
  * Created on April 16, 2021, 10:23 AM
  */
@@ -10,45 +10,34 @@
 #include <p24FJ128GC006.h>
 #define FCY 8000000UL
 #include <libpic30.h>
-/*
- *	I2C interface
- *	2016-2021 (C) Mizutani Lab
- */
-#include	"i2c.h"
-//#include	"lcd.h"
 
-//#define I2C_SCL_OUT LATCbits.LATC0
-//#define I2C_SCL_IN PORTCbits.RC0
+#include	"i2c.h"
+
+
 #define I2C_SCL_TRIS TRISDbits.TRISD10
 #define I2C_SCL_PULLUP LATDbits.LATD10
-//#define I2C_SDA_OUT LATCbits.LATC1
-//#define I2C_SDA_IN PORTCbits.RC1
 #define I2C_SDA_TRIS TRISDbits.TRISD9
 #define I2C_SDA_PULLUP LATDbits.LATD9
 
-//SI5351A address
-//#define I2C_ADDR 0xC0
-//MAX30102 address
-//#define I2C_ADDR 0xAE
+
 
 void i2c_init(void) {
-	//ANSELC = 0x00; //set as digital
 	I2C_SCL_PULLUP = 1;
 	I2C_SDA_PULLUP = 1;
-    ODCDbits.ODD9 = 1;
-    ODCDbits.ODD10 = 1;
+	ODCDbits.ODD9 = 1;
+    	ODCDbits.ODD10 = 1;
 	I2C_SCL_TRIS = 0;//output
 	I2C_SDA_TRIS = 0;//output
 	//I2C_SCL_TRIS = 1;//disable output
 	//I2C_SDA_TRIS = 1;//disable output
 	//SSP1ADD = 0x4F;//Baud rate 100 kHz
-    I2C1CON = 0x1000;//Set all bits to known state.
-    I2C1CONbits.I2CEN = 0;//Disable until everything set up. Pins will be I/0
+    	I2C1CON = 0x1000;//Set all bits to known state.
+    	I2C1CONbits.I2CEN = 0;//Disable until everything set up. Pins will be I/0
 	I2C1BRG = 9;
-    I2C1CONbits.DISSLW = 0;//Enable slew rate control for 400kHz operation.
-    //IFS1bits.MI2C1IF = 0;//Clear I2C master int flag.
-    I2C1CONbits.I2CEN = 1;
-    //SSP1ADD = 0x13;//Baud rate 400 kHz
+    	I2C1CONbits.DISSLW = 0;//Enable slew rate control for 400kHz operation.
+    	//IFS1bits.MI2C1IF = 0;//Clear I2C master int flag.
+    	I2C1CONbits.I2CEN = 1;
+    	//SSP1ADD = 0x13;//Baud rate 400 kHz
 	//SSP1STAT = 0x00;//SMP=0 (Slew rate control enabled for high speed mode), CKE=0 (Disable SMbus specific inputs)
 	//SSP1CON1 = 0x28;//SSPEN=1 (Enable SSP unit), SSP1M<3:0>=1000 (I2C master)
 }
@@ -70,14 +59,11 @@ void i2c_stop(void) {
 }
 
 void i2c_write(unsigned char byte) {
-	//PIR1bits.SSP1IF = 0;
 	I2C1TRN = byte;
 	while(I2C1STATbits.TRSTAT);
-	//while(!PIR1bits.SSP1IF);
 }
 
 char i2c_read(char bLastRx) {
-	//PIR1bits.SSP1IF = 0;
 	I2C1CONbits.RCEN = 1;
 	while(I2C1CONbits.RCEN);
 	//ack sequence
