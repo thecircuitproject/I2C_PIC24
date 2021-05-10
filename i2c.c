@@ -30,16 +30,12 @@ void i2c_init(void) {
 	I2C_SDA_TRIS = 0;//output
 	//I2C_SCL_TRIS = 1;//disable output
 	//I2C_SDA_TRIS = 1;//disable output
-	//SSP1ADD = 0x4F;//Baud rate 100 kHz
     	I2C1CON = 0x1000;//Set all bits to known state.
     	I2C1CONbits.I2CEN = 0;//Disable until everything set up. Pins will be I/0
 	I2C1BRG = 9;
     	I2C1CONbits.DISSLW = 0;//Enable slew rate control for 400kHz operation.
     	//IFS1bits.MI2C1IF = 0;//Clear I2C master int flag.
     	I2C1CONbits.I2CEN = 1;
-    	//SSP1ADD = 0x13;//Baud rate 400 kHz
-	//SSP1STAT = 0x00;//SMP=0 (Slew rate control enabled for high speed mode), CKE=0 (Disable SMbus specific inputs)
-	//SSP1CON1 = 0x28;//SSPEN=1 (Enable SSP unit), SSP1M<3:0>=1000 (I2C master)
 }
 
 void i2c_start(void) {
@@ -48,7 +44,6 @@ void i2c_start(void) {
 }
 
 void i2c_restart(void) {
-	//PIR1bits.SSP1IF = 0;
 	I2C1CONbits.RSEN = 1;
 	while(I2C1CONbits.RSEN);
 }
